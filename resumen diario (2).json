@@ -1,0 +1,128 @@
+{
+  "name": "resumen diario",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "687d6a96-87c8-45fc-b980-910eb6abe7ae",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "4JYZnszMMeI5vkwj",
+          "mode": "list",
+          "cachedResultName": "solicitudes",
+          "cachedResultUrl": "/projects/P6uBSvzZ5n1oX45x/datatables/4JYZnszMMeI5vkwj"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e593d537-c529-4d87-acd1-4a167a19849d",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst total = items.length;\n\nconst porRuta = {};\nlet montoTotalDia = 0;\nlet aprobados = 0;\n\nfor (const item of items) {\n  const d = item.json;\n  const ruta = d.ruta || 'SIN_RUTA';\n  porRuta[ruta] = (porRuta[ruta] || 0) + Number(d.monto || 0);\n  montoTotalDia += Number(d.monto || 0);\n  if (d.estado_final === 'aprobado') aprobados++;\n}\n\nconst tasaAprobacion = total > 0 ? ((aprobados / total) * 100).toFixed(1) : 0;\n\nconst detalleRutas = Object.entries(porRuta)\n  .map(([ruta, monto]) => `${ruta}: $${monto.toLocaleString('es-CL')}`)\n  .join(' | ');\n\nconst mensaje = `Resumen del día: ${total} solicitudes procesadas. Monto total: $${montoTotalDia.toLocaleString('es-CL')}. Por ruta: ${detalleRutas}. Tasa de aprobación automática: ${tasaAprobacion}%.`;\n\nreturn [{ json: {\n  total_solicitudes: total,\n  monto_total_dia: montoTotalDia,\n  monto_por_ruta: porRuta,\n  tasa_aprobacion: Number(tasaAprobacion),\n  mensaje\n} }];;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "3b72d56b-f228-45ad-bcc9-3c05ccd51d9e",
+      "name": "Calcular resumen"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c775ed1-d8ab-4f23-8612-00dae29a7ae6",
+              "name": "resumen_final",
+              "value": "={{ $json.mensaje }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "6e954568-ff12-4555-b7b6-2b891d37d909",
+      "name": "Enviar resumen"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Calcular resumen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular resumen": {
+      "main": [
+        [
+          {
+            "node": "Enviar resumen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b6d6fea3-2aa3-4877-a29e-510ad03fec1a",
+  "meta": {
+    "instanceId": "568456abb1073e7eab076c1e6a4c82d1dc829846b528e42468e443df5453b7d8"
+  },
+  "nodeGroups": [],
+  "id": "ifzj92vULIxV0LbS",
+  "tags": []
+}

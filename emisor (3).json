@@ -1,0 +1,84 @@
+{
+  "name": "emisor",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "ff73f5b7-d267-47bd-9a9e-fdfaa3cf408e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://anto-2.app.n8n.cloud/webhook-test/triage-524",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "17400b90-44d4-4d10-a0bc-942bc6cac275",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const solicitudes = [\n  {\"id_solicitud\":\"CASO-TEXTO\",\"sku\":\"PL-120\",\"unidades\":\"1\",\"monto\":\"veinte mil\",\"dias_desde_compra\":\"2\",\"estado_producto\":\"sin_abrir\",\"email_cliente\":\"cliente@example.cl\"},\n  {\"id_solicitud\":\"CASO-CORREO\",\"sku\":\"PL-120\",\"unidades\":\"1\",\"monto\":\"45990\",\"dias_desde_compra\":\"2\",\"estado_producto\":\"sin_abrir\",\"email_cliente\":\"asdas\"},\n  {\"id_solicitud\":\"CASO-NEGATIVO\",\"sku\":\"PL-120\",\"unidades\":\"1\",\"monto\":\"-999.99\",\"dias_desde_compra\":\"2\",\"estado_producto\":\"sin_abrir\",\"email_cliente\":\"cliente@example.cl\"}\n];\n\nreturn solicitudes.map(s => ({ json: s }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2b3358da-8551-438e-abc4-432cd36a4c94",
+      "name": "Solicitudes"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Solicitudes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solicitudes": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "77ab61df-7c5f-4a19-9954-4cf9039aeb3a",
+  "meta": {
+    "instanceId": "568456abb1073e7eab076c1e6a4c82d1dc829846b528e42468e443df5453b7d8"
+  },
+  "nodeGroups": [],
+  "id": "gsRwJuTVHT1fuPwK",
+  "tags": []
+}

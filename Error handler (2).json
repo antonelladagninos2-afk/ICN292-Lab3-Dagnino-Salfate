@@ -1,0 +1,65 @@
+{
+  "name": "Error handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "09f27b27-e0e8-4035-be06-ec9564ce9ea2",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35ec5771-ab95-447d-8145-3d94481d3812",
+              "name": "mensaje_error",
+              "value": "={{ 'Error en el workflow: ' + $json.workflow.name + '. Nodo: ' + $json.execution.lastNodeExecuted }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8e82a9b1-3382-4bf9-b255-1be403c4eee0",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8d51ea2a-dc50-4571-9d5b-83562a804af9",
+  "meta": {
+    "instanceId": "568456abb1073e7eab076c1e6a4c82d1dc829846b528e42468e443df5453b7d8"
+  },
+  "nodeGroups": [],
+  "id": "53Aw8HCFpWYo3D5P",
+  "tags": []
+}
